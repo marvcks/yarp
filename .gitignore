@@ -52,3 +52,18 @@ RESULT/
 # Sphinx documentation
 docs/_build/
 
+# Data files (generated outputs)
+*.pkl
+*.ckpt.json
+reactions*.csv
+reactions_depth15.csv
+
+# Generated images and 3D structures
+reaction_images/
+reaction_images_no_map/
+reaction_3d/
+
+# Temporary files
+prompt.md
+*.xyz
+

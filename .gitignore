@@ -66,4 +66,14 @@ reaction_3d/
 # Temporary files
 prompt.md
 *.xyz
-
+3d_structures/
+*.com
+*.bibtex
+*.log
+*.engrad
+*.gbw
+*.txt
+*.xtbrestart
+scratch
+*.json
+gluco_example/

@@ -6,24 +6,22 @@ Usage:
     python enumerate.py -s <SMILES> -m b2f2 -o output.json
     python enumerate.py -s <SMILES> -m b2f2 -o output.json --break-higher-order
 """
-
-import sys
-import json
 import re
+import json
 import argparse
-from pathlib import Path
-import os
 
-# Add yarp to path
-sys.path.insert(0, '/inspire/hdd/global_user/xuxiaohu-253107030013/yarp')
-
-import yarp as yp
 import numpy as np
+
 from rdkit import Chem
-from rdkit.Chem import AllChem
 from rdkit import RDLogger
 RDLogger.DisableLog('rdApp.*')
+
+import yarp as yp
 from yarp.find_lewis import return_formals
+
+
+# Default HMF target SMILES (canonicalized)
+DEFAULT_TARGET_SMILES = "O=Cc1ccc(CO)o1.O.O.O"
 
 
 def canonicalize_smiles(smiles: str) -> str | None:
@@ -53,10 +51,6 @@ def check_target_in_reactions(reactions: list, target_smiles: str) -> bool:
         if product_canon == target_canon:
             return True
     return False
-
-
-# Default HMF target SMILES (canonicalized)
-DEFAULT_TARGET_SMILES = "O=Cc1ccc(CO)o1.O.O.O"
 
 
 def get_fragments(side):
@@ -171,7 +165,17 @@ def enumerate_reactions(smiles, n_break, output_file=None, break_higher_order=Fa
     broken = list(set(yp.break_bonds([mol], n=n_break, break_higher_order=break_higher_order)))
     all_products = []
     for i, intermediate in enumerate(broken):
-        products = list(set(yp.form_bonds([intermediate], hashes=hashes, inter=True)))
+        products = list(
+                    set(
+                        yp.form_bonds(
+                            [intermediate], 
+                            hashes=hashes, 
+                            inter=True,
+                            intra=True,
+                            def_only=True,
+                            )
+                        )
+                    )
         all_products.extend(products)
 
     all_products = list(set(all_products))
